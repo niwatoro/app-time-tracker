@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const { exec } = require("child_process");
+
 require("electron-reload")(__dirname, {
   electron: path.join(__dirname, "node_modules", ".bin", "electron"),
 });
