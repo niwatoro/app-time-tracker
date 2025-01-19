@@ -1,6 +1,9 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const { exec } = require("child_process");
+require("electron-reload")(__dirname, {
+  electron: path.join(__dirname, "node_modules", ".bin", "electron"),
+});
 
 let mainWindow;
 let appUsageData = {};
@@ -13,7 +16,7 @@ function getActiveWindow() {
     const script = `
       tell application "System Events"
         set frontApp to first application process whose frontmost is true
-        return name of frontApp
+        return name of application file of frontApp
       end tell
     `;
 

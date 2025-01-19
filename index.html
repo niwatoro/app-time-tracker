@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>App Time Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <style>
       body {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -33,6 +34,14 @@
       .app-name {
         flex: 1;
         margin-right: 10px;
+        display: flex;
+        align-items: center;
+      }
+      .app-icon {
+        margin-right: 8px;
+        width: 20px;
+        text-align: center;
+        color: #666;
       }
       .app-time {
         color: #666;
@@ -45,43 +54,6 @@
       <ul id="appList" class="app-list"></ul>
     </div>
 
-    <script>
-      const { ipcRenderer } = require("electron");
-
-      // ミリ秒を時間:分:秒の形式に変換
-      function formatDuration(ms) {
-        const seconds = Math.floor(ms / 1000);
-        const h = Math.floor(seconds / 3600);
-        const m = Math.floor((seconds % 3600) / 60);
-        const s = seconds % 60;
-        return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
-      }
-
-      // アプリケーション使用時間の表示を更新
-      function updateAppList(data) {
-        const appList = document.getElementById("appList");
-        appList.innerHTML = "";
-
-        Object.entries(data)
-          .sort(([, a], [, b]) => b - a)
-          .forEach(([appName, duration]) => {
-            const li = document.createElement("li");
-            li.className = "app-item";
-            li.innerHTML = `
-            <span class="app-name">${appName}</span>
-            <span class="app-time">${formatDuration(duration)}</span>
-          `;
-            appList.appendChild(li);
-          });
-      }
-
-      // メインプロセスからの更新を受信
-      ipcRenderer.on("update-usage", (event, data) => {
-        updateAppList(data);
-      });
-
-      // 初期データをリクエスト
-      ipcRenderer.send("request-initial-data");
-    </script>
+    <script src="render.js"></script>
   </body>
 </html>
