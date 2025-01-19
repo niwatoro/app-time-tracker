@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>App Time Tracker</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        background-color: white;
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        font-size: 18px;
+        margin-bottom: 15px;
+        color: #333;
+      }
+      .app-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .app-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+      }
+      .app-name {
+        flex: 1;
+        margin-right: 10px;
+      }
+      .app-time {
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>アプリケーション使用時間</h1>
+      <ul id="appList" class="app-list"></ul>
+    </div>
+
+    <script>
+      const { ipcRenderer } = require("electron");
+
+      // ミリ秒を時間:分:秒の形式に変換
+      function formatDuration(ms) {
+        const seconds = Math.floor(ms / 1000);
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = seconds % 60;
+        return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+      }
+
+      // アプリケーション使用時間の表示を更新
+      function updateAppList(data) {
+        const appList = document.getElementById("appList");
+        appList.innerHTML = "";
+
+        Object.entries(data)
+          .sort(([, a], [, b]) => b - a)
+          .forEach(([appName, duration]) => {
+            const li = document.createElement("li");
+            li.className = "app-item";
+            li.innerHTML = `
+            <span class="app-name">${appName}</span>
+            <span class="app-time">${formatDuration(duration)}</span>
+          `;
+            appList.appendChild(li);
+          });
+      }
+
+      // メインプロセスからの更新を受信
+      ipcRenderer.on("update-usage", (event, data) => {
+        updateAppList(data);
+      });
+
+      // 初期データをリクエスト
+      ipcRenderer.send("request-initial-data");
+    </script>
+  </body>
+</html>
