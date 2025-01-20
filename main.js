@@ -82,7 +82,10 @@ async function getActiveWindowInfo() {
             const domain = new URL(url).hostname;
             resolve({ app: appName, domain });
           } catch (error) {
-            const splitted = url.split(" - ").flatMap((part) => part.split(" | "));
+            const splitted = url
+              .split(" - ")
+              .flatMap((part) => part.split(" | "))
+              .flatMap((part) => part.split(" / "));
             resolve({ app: appName, domain: splitted[splitted.length - 1].split("(")[0].trim() });
           }
           return;
