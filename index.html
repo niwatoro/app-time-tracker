@@ -5,9 +5,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <style>
       body {
+        margin: 0;
+        padding: 4px 8px;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        font-size: small;
         background-color: white;
         border-radius: 8px;
+        -webkit-app-region: drag;
       }
       .app-list {
         list-style: none;
@@ -16,11 +20,15 @@
       }
       .app-item {
         display: flex;
-        justify-content: space-between;
-        margin-left: 4px;
+        flex-direction: column;
+        gap: 6px;
         padding: 8px 0;
-        gap: 8px;
         border-bottom: 1px solid #eee;
+      }
+      .app-info {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
       }
       .app-name {
         flex: 1;
@@ -35,6 +43,42 @@
       }
       .app-time {
         color: #666;
+        font-family: monospace;
+        font-size: medium;
+      }
+
+      /* ドメインリストのスタイル */
+      .domains-list {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        list-style: none;
+        margin-left: 12px;
+      }
+
+      .domain-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: smaller;
+        color: #666;
+      }
+
+      .domain-icon {
+        font-size: smaller;
+      }
+
+      .domain-name {
+        flex: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .domain-time {
+        color: #888;
+        font-family: monospace;
+        font-size: small;
       }
     </style>
   </head>

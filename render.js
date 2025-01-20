@@ -48,27 +48,71 @@ function getAppIcon(appName) {
   return "fa-solid fa-window-maximize";
 }
 
-function updateAppList(data) {
+function updateAppList({ usageData, activeApp, activeDomain }) {
   const appList = document.getElementById("appList");
   appList.innerHTML = "";
 
-  Object.entries(data)
-    .sort(([, a], [, b]) => b - a)
-    .forEach(([appName, duration]) => {
-      const displayName = appName.slice(0, appName.lastIndexOf("."));
-      const icon = getAppIcon(displayName);
+  // データを使用時間でソート、ただし現在のアプリを最上位に
+  const sortedEntries = Object.entries(usageData).sort(([appNameA, a], [appNameB, b]) => {
+    // 現在アクティブなアプリを最上位に
+    if (appNameA === activeApp) return -1;
+    if (appNameB === activeApp) return 1;
 
-      const li = document.createElement("li");
-      li.className = "app-item";
-      li.innerHTML = `
-      <span class="${icon} app-icon"></span>
-      <span class="app-name">
-        ${displayName}
-      </span>
-      <span class="app-time">${formatDuration(duration)}</span>
+    // それ以外は使用時間でソート
+    const durationA = typeof a === "object" ? a.total : a;
+    const durationB = typeof b === "object" ? b.total : b;
+    return durationB - durationA;
+  });
+
+  sortedEntries.forEach(([appName, data]) => {
+    const displayName = appName.slice(0, appName.lastIndexOf("."));
+    const icon = getAppIcon(displayName);
+    const duration = typeof data === "object" ? data.total : data;
+
+    const li = document.createElement("li");
+    li.className = "app-item";
+    li.innerHTML = `
+    <div>
+      <div class="app-info">
+        <span class="${icon} app-icon"></span>
+        <span class="app-name">
+          ${displayName}
+        </span>
+        <span class="app-time">${formatDuration(duration)}</span>
+      </div>
+    </div>
     `;
-      appList.appendChild(li);
-    });
+
+    // ブラウザの場合、ドメインごとの使用時間を表示
+    if (typeof data === "object" && data.domains) {
+      const domainsList = document.createElement("ul");
+      domainsList.className = "domains-list";
+
+      // ドメインを使用時間でソート
+      Object.entries(data.domains)
+        .sort(([domainNameA, a], [domainNameB, b]) => {
+          // 現在アクティブなドメインを最上位に
+          if (domainNameA === activeDomain) return -1;
+          if (domainNameB === activeDomain) return 1;
+
+          return b - a;
+        })
+        .forEach(([domain, domainDuration]) => {
+          const domainLi = document.createElement("li");
+          domainLi.className = "domain-item";
+          domainLi.innerHTML = `
+            <span class="fa-solid fa-globe domain-icon"></span>
+            <span class="domain-name">${domain}</span>
+            <span class="domain-time">${formatDuration(domainDuration)}</span>
+          `;
+          domainsList.appendChild(domainLi);
+        });
+
+      li.appendChild(domainsList);
+    }
+
+    appList.appendChild(li);
+  });
 }
 
 // メインプロセスからの更新を受信

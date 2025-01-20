@@ -1,5 +1,5 @@
 {
-  "name": "app-time-tracker",
+  "name": "AppTimeTracker",
   "version": "1.0.0",
   "description": "Desktop application usage time tracker",
   "main": "main.js",
