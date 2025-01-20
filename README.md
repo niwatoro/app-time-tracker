@@ -16,7 +16,7 @@ A desktop application that tracks and displays the time spent on different appli
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/app-time-tracker.git
+git clone https://github.com/niwatoro/app-time-tracker.git
 cd app-time-tracker
 ```
 
@@ -66,7 +66,3 @@ npm start
 - `main.js` - Main Electron process
 - `render.js` - Renderer process handling UI updates
 - `index.html` - Application UI structure and styling
-
-## License
-
-ISC
